@@ -1,0 +1,89 @@
+---
+import { galleryData } from "../data/gallery";
+import Icon from "./Icon.astro";
+---
+
+<div class="row g-4">
+  {galleryData.map((item, index) => (
+    <div class="col-lg-4 col-md-6">
+      <a href="/galeri/" class="text-decoration-none d-block h-100" aria-label={`Lihat preview foto ${item.title}`}>
+        <div class="gallery-item-card position-relative overflow-hidden rounded-3 border border-dark h-100" style="background-color: var(--color-surface);">
+          
+          <!-- Image Container with aspect ratio -->
+          <div class="ratio ratio-4x3 position-relative overflow-hidden">
+            <img
+              src={item.image}
+              alt={item.altText}
+              loading={index < 2 ? "eager" : "lazy"}
+              width="600"
+              height="450"
+              class="w-100 h-100 object-fit-cover gallery-img"
+            />
+            
+            <div class="gallery-hover-indicator d-flex align-items-center justify-content-center">
+              <span class="preview-pill-sm d-inline-flex align-items-center gap-1">
+                <Icon name="search" size={13} />
+                <span>Buka Preview di Galeri</span>
+              </span>
+            </div>
+
+            <div class="gallery-overlay d-flex flex-column justify-content-end p-3 position-absolute top-0 start-0 w-100 h-100">
+              <span class="badge bg-black text-accent border border-secondary align-self-start mb-2 small d-inline-flex align-items-center gap-1">
+                <Icon name="pin" size={12} class="text-accent" />
+                <span>{item.location}</span>
+              </span>
+              <h3 class="h5 text-white mb-1">{item.title}</h3>
+              <p class="small text-light text-opacity-75 mb-0 d-none d-sm-block">{item.caption}</p>
+            </div>
+          </div>
+
+        </div>
+      </a>
+    </div>
+  ))}
+</div>
+
+<style>
+  .gallery-item-card {
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .gallery-item-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(200, 169, 106, 0.45) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  }
+  .gallery-img {
+    transition: transform 0.4s ease;
+  }
+  .gallery-item-card:hover .gallery-img {
+    transform: scale(1.05);
+  }
+  .gallery-hover-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(9, 9, 9, 0.35);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 2;
+  }
+  .gallery-item-card:hover .gallery-hover-indicator {
+    opacity: 1;
+  }
+  .preview-pill-sm {
+    background: rgba(9, 9, 9, 0.85);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .gallery-overlay {
+    background: linear-gradient(180deg, rgba(9, 9, 9, 0) 30%, rgba(9, 9, 9, 0.9) 100%);
+    z-index: 1;
+  }
+</style>

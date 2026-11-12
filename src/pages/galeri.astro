@@ -1,0 +1,611 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import Icon from "../components/Icon.astro";
+import { galleryData } from "../data/gallery";
+import { siteConfig } from "../data/site";
+import {
+  generateOrganizationSchema,
+  generateWebSiteSchema,
+  generateWebPageSchema,
+  generateBreadcrumbSchema
+} from "../utils/schema";
+
+const pageTitle = "Galeri Dokumentasi Outbound Batu Malang | Foto Kegiatan Nyata";
+const pageDescription = "Lihat dokumentasi foto kegiatan outbound, team building, rafting Kaliwatu, paintball, dan family gathering di kawasan sejuk Batu Malang.";
+const pageUrl = `${siteConfig.url}/galeri/`;
+
+const breadcrumbItems = [
+  { name: "Galeri Dokumentasi", url: pageUrl }
+];
+
+const schemas = [
+  generateOrganizationSchema(),
+  generateWebSiteSchema(),
+  generateWebPageSchema({
+    title: pageTitle,
+    description: pageDescription,
+    url: pageUrl
+  }),
+  generateBreadcrumbSchema(breadcrumbItems)
+];
+
+const categories = [
+  { id: "all", label: "Semua Kategori" },
+  { id: "team-building", label: "Team Building" },
+  { id: "gathering", label: "Gathering" },
+  { id: "rafting", label: "Rafting Kaliwatu" },
+  { id: "adventure", label: "Paintball & Adventure" }
+];
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  schemas={schemas}
+>
+  <Breadcrumb items={breadcrumbItems} />
+
+  <!-- Page Header -->
+  <section class="page-hero-section text-light" aria-label="Hero Galeri Dokumentasi">
+    <img
+      src="/images/hero/hero-galeri.webp"
+      alt="Dokumentasi foto kegiatan outbound, team building, dan gathering di Kota Batu"
+      class="page-hero-bg"
+      width="1600"
+      height="600"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="page-hero-overlay" aria-hidden="true"></div>
+
+    <div class="container-xl page-hero-content">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <div class="section-badge">Dokumentasi Nyata di Lapangan</div>
+          <h1 class="display-5 fw-bold text-light mb-3">Galeri Kegiatan Outbound Batu Malang</h1>
+          <p class="lead text-light text-opacity-90 mb-0" style="line-height: 1.7;">
+            Kumpulan potret momen keceriaan, kehangatan, dinamika kelompok, dan adrenalin peserta saat berkegiatan bersama kami di berbagai venue alam terbuka Kota Batu. <strong>Klik foto untuk melihat preview penuh (lightbox).</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section with Filter -->
+  <section class="section-padding">
+    <div class="container-xl">
+      
+      <!-- Interactive Filter Buttons (PRD FR-05 Lightweight JS) -->
+      <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 mb-5">
+        {categories.map((cat, index) => (
+          <button
+            type="button"
+            class={`btn btn-sm px-3 py-2 rounded-pill filter-btn ${index === 0 ? "btn-gold active" : "btn-outline-gold"}`}
+            data-filter={cat.id}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="row g-4" id="galleryContainer">
+        {galleryData.map((item, index) => (
+          <div class="col-lg-4 col-md-6 gallery-card" data-category={item.category}>
+            <div
+              class="card-dark p-0 overflow-hidden h-100 border border-dark gallery-preview-trigger"
+              data-img={item.image}
+              data-title={item.title}
+              data-alt={item.altText}
+              data-location={item.location}
+              data-category={item.categoryLabel}
+              data-caption={item.caption}
+              data-index={index}
+              role="button"
+              tabindex="0"
+              aria-label={`Klik untuk preview foto: ${item.title}`}
+            >
+              
+              <div class="ratio ratio-4x3 position-relative overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.altText}
+                  loading={index < 3 ? "eager" : "lazy"}
+                  width="600"
+                  height="450"
+                  class="w-100 h-100 object-fit-cover gallery-photo"
+                />
+                
+                <!-- Hover Preview Overlay Indicator -->
+                <div class="gallery-hover-overlay d-flex align-items-center justify-content-center">
+                  <span class="btn-preview-pill d-inline-flex align-items-center gap-1">
+                    <Icon name="search" size={14} />
+                    <span>Perbesar Foto</span>
+                  </span>
+                </div>
+
+                <div class="position-absolute top-0 start-0 m-3 z-2">
+                  <span class="badge bg-black text-accent border border-secondary small d-inline-flex align-items-center gap-1">
+                    <Icon name="pin" size={12} class="text-accent" />
+                    <span>{item.location}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-3">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <span class="text-xs text-accent fw-bold text-uppercase" style="font-size: 0.75rem;">
+                    {item.categoryLabel}
+                  </span>
+                </div>
+                <h3 class="h5 text-light mb-1">{item.title}</h3>
+                <p class="small text-muted-custom mb-0">{item.caption}</p>
+              </div>
+
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Bottom WhatsApp CTA -->
+      <div class="p-4 p-md-5 rounded-4 text-center border border-dark mt-5" style="background-color: var(--color-surface);">
+        <h3 class="h4 text-light mb-2">Tertarik Mengadakan Acara Seru Seperti Ini?</h3>
+        <p class="text-muted-custom small mx-auto mb-4" style="max-width: 600px;">
+          Setiap kegiatan kami sertakan dokumentasi foto profesional untuk mengabadikan momen berharga rombongan Anda.
+        </p>
+        <WhatsAppButton
+          variant="gold"
+          size="md"
+          customMessage="Halo Admin, saya melihat dokumentasi galeri kegiatan outbound Batu dan tertarik ingin konsultasi."
+        >
+          Konsultasi Jadwal & Acara via WhatsApp
+        </WhatsAppButton>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Native Zero-Dependency Lightbox Modal (100% Guaranteed Preview) -->
+  <div
+    id="galleryLightbox"
+    class="lightbox-backdrop"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    style="display: none;"
+  >
+    <div class="lightbox-container">
+      
+      <!-- Top Bar: Category, Location & Close Button -->
+      <div class="lightbox-header">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <span class="badge bg-black text-accent border border-secondary" id="lbCategory">Kategori</span>
+          <span class="small text-light text-opacity-75 d-inline-flex align-items-center gap-1">
+            <Icon name="pin" size={12} class="text-accent" />
+            <span id="lbLocation">Lokasi</span>
+          </span>
+          <span class="badge bg-dark text-muted-custom border border-dark ms-1" id="lbCounter">1 / 6</span>
+        </div>
+        <button
+          type="button"
+          class="lightbox-close-btn"
+          id="lbCloseBtn"
+          aria-label="Tutup Preview Foto (Esc)"
+          title="Tutup (Esc)"
+        >
+          <Icon name="cross" size={18} />
+        </button>
+      </div>
+
+      <!-- Main Photo Display & Nav Arrows -->
+      <div class="lightbox-content-box">
+        <button
+          type="button"
+          class="lightbox-nav-btn lb-prev"
+          id="lbPrevBtn"
+          aria-label="Foto Sebelumnya"
+          title="Sebelumnya (Panah Kiri)"
+        >
+          <Icon name="arrow-left" size={20} />
+        </button>
+        
+        <div class="lightbox-image-wrapper">
+          <img
+            id="lbImage"
+            src=""
+            alt=""
+            class="lightbox-img"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="lightbox-nav-btn lb-next"
+          id="lbNextBtn"
+          aria-label="Foto Berikutnya"
+          title="Berikutnya (Panah Kanan)"
+        >
+          <Icon name="arrow-right" size={20} />
+        </button>
+      </div>
+
+      <!-- Bottom Info Bar -->
+      <div class="lightbox-footer">
+        <div class="lightbox-info text-start">
+          <h4 class="h5 text-light mb-1" id="lbTitle">Judul Foto</h4>
+          <p class="small text-muted-custom mb-0" id="lbCaption">Keterangan foto kegiatan.</p>
+        </div>
+        <div>
+          <a
+            id="lbWaBtn"
+            href="https://wa.me/6281217366600?text=Halo%20Admin%2C%20saya%20tertarik%20dengan%20foto%20di%20galeri%20outbound%20Batu."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-gold btn-sm py-2 px-3 fs-6 text-decoration-none"
+          >
+            Tanya Acara Ini via WA
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Client-side filter & Native Lightbox Script -->
+  <script is:inline>
+    (function () {
+      function initGallery() {
+        // 1. Filter Kategori
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.gallery-card');
+
+        filterBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            filterBtns.forEach((b) => {
+              b.classList.remove('btn-gold', 'active');
+              b.classList.add('btn-outline-gold');
+            });
+            btn.classList.remove('btn-outline-gold');
+            btn.classList.add('btn-gold', 'active');
+
+            const filter = btn.getAttribute('data-filter');
+            cards.forEach((card) => {
+              const cat = card.getAttribute('data-category');
+              if (filter === 'all' || cat === filter) {
+                card.style.display = 'block';
+              } else {
+                card.style.display = 'none';
+              }
+            });
+          });
+        });
+
+        // 2. Lightbox Modal Preview Elements
+        const triggers = document.querySelectorAll('.gallery-preview-trigger');
+        const lightbox = document.getElementById('galleryLightbox');
+        const lbImg = document.getElementById('lbImage');
+        const lbTitle = document.getElementById('lbTitle');
+        const lbCategory = document.getElementById('lbCategory');
+        const lbLocation = document.getElementById('lbLocation');
+        const lbCaption = document.getElementById('lbCaption');
+        const lbCounter = document.getElementById('lbCounter');
+        const lbClose = document.getElementById('lbCloseBtn');
+        const lbPrev = document.getElementById('lbPrevBtn');
+        const lbNext = document.getElementById('lbNextBtn');
+        const lbWa = document.getElementById('lbWaBtn');
+
+        if (!lightbox || !triggers.length) return;
+
+        let currentIndex = 0;
+        const total = triggers.length;
+
+        function showPhoto(index) {
+          if (index < 0) index = total - 1;
+          if (index >= total) index = 0;
+          currentIndex = index;
+
+          const el = triggers[currentIndex];
+          if (!el) return;
+
+          const img = el.getAttribute('data-img') || '';
+          const title = el.getAttribute('data-title') || '';
+          const alt = el.getAttribute('data-alt') || '';
+          const location = el.getAttribute('data-location') || '';
+          const category = el.getAttribute('data-category') || '';
+          const caption = el.getAttribute('data-caption') || '';
+
+          if (lbImg) {
+            lbImg.src = img;
+            lbImg.alt = alt;
+          }
+          if (lbTitle) lbTitle.textContent = title;
+          if (lbCategory) lbCategory.textContent = category;
+          if (lbLocation) lbLocation.textContent = location;
+          if (lbCaption) lbCaption.textContent = caption;
+          if (lbCounter) lbCounter.textContent = `${currentIndex + 1} / ${total}`;
+
+          if (lbWa) {
+            const msg = `Halo Admin, saya tertarik dengan foto kegiatan "${title}" di ${location} dan ingin konsultasi paketnya.`;
+            lbWa.href = `https://wa.me/6281217366600?text=${encodeURIComponent(msg)}`;
+          }
+        }
+
+        function openLightbox(index) {
+          showPhoto(index);
+          lightbox.style.display = 'flex';
+          void lightbox.offsetWidth; // Force reflow
+          lightbox.classList.add('active');
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+          lightbox.classList.remove('active');
+          lightbox.setAttribute('aria-hidden', 'true');
+          setTimeout(() => {
+            if (!lightbox.classList.contains('active')) {
+              lightbox.style.display = 'none';
+            }
+          }, 200);
+          document.body.style.overflow = '';
+        }
+
+        triggers.forEach((trigger, idx) => {
+          trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(idx);
+          });
+          trigger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openLightbox(idx);
+            }
+          });
+        });
+
+        if (lbClose) lbClose.addEventListener('click', closeLightbox);
+
+        // Click on dark backdrop outside container closes lightbox
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) {
+            closeLightbox();
+          }
+        });
+
+        if (lbPrev) {
+          lbPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPhoto(currentIndex - 1);
+          });
+        }
+
+        if (lbNext) {
+          lbNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPhoto(currentIndex + 1);
+          });
+        }
+
+        // Keyboard navigation (Esc, ArrowLeft, ArrowRight)
+        document.addEventListener('keydown', (e) => {
+          if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') {
+              closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+              showPhoto(currentIndex - 1);
+            } else if (e.key === 'ArrowRight') {
+              showPhoto(currentIndex + 1);
+            }
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGallery);
+      } else {
+        initGallery();
+      }
+    })();
+  </script>
+
+  <style>
+    .gallery-preview-trigger {
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .gallery-preview-trigger:hover {
+      transform: translateY(-4px);
+      border-color: rgba(200, 169, 106, 0.5) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    .gallery-photo {
+      transition: transform 0.4s ease;
+    }
+    .gallery-preview-trigger:hover .gallery-photo {
+      transform: scale(1.05);
+    }
+    .gallery-hover-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 9, 9, 0.45);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 1;
+    }
+    .gallery-preview-trigger:hover .gallery-hover-overlay {
+      opacity: 1;
+    }
+    .btn-preview-pill {
+      background-color: rgba(9, 9, 9, 0.85);
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Native Lightbox Modal Styles */
+    .lightbox-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 4, 4, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.22s ease-in-out;
+    }
+    .lightbox-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-container {
+      background: #111111;
+      border: 1px solid #333333;
+      border-radius: 18px;
+      max-width: 1080px;
+      width: 100%;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+      animation: scaleUp 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    @keyframes scaleUp {
+      from {
+        transform: scale(0.96);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid #222222;
+      background: #0d0d0d;
+    }
+    .lightbox-close-btn {
+      background: #222222;
+      color: #ffffff;
+      border: 1px solid #444444;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: all 0.2s ease;
+    }
+    .lightbox-close-btn:hover {
+      background: #dc3545;
+      border-color: #dc3545;
+      transform: scale(1.05);
+    }
+    .lightbox-content-box {
+      position: relative;
+      background: #060606;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      max-height: 65vh;
+      padding: 0.5rem;
+    }
+    .lightbox-image-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 63vh;
+      object-fit: contain;
+      border-radius: 8px;
+      user-select: none;
+    }
+    .lightbox-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(20, 20, 20, 0.8);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    .lightbox-nav-btn:hover {
+      background: var(--color-accent);
+      color: #000000;
+      border-color: var(--color-accent);
+    }
+    .lb-prev {
+      left: 14px;
+    }
+    .lb-next {
+      right: 14px;
+    }
+    .lightbox-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid #222222;
+      background: #0d0d0d;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    @media (max-width: 576px) {
+      .lightbox-content-box {
+        max-height: 50vh;
+      }
+      .lightbox-img {
+        max-height: 48vh;
+      }
+      .lightbox-nav-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.5rem;
+      }
+      .lb-prev {
+        left: 6px;
+      }
+      .lb-next {
+        right: 6px;
+      }
+    }
+  </style>
+</BaseLayout>
